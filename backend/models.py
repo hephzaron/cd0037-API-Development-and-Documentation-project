@@ -1,10 +1,14 @@
 import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
+from decouple import config
 import json
 
-database_name = 'trivia'
-database_path = 'postgres://{}/{}'.format('localhost:5432', database_name)
+DATABASE_PATH = config('DATABASE_PATH')
+
+SQLALCHEMY_TRACK_MODIFICATIONS = config('SQLALCHEMY_TRACK_MODIFICATIONS')
+SECRET_KEY = config('SECRET_KEY')
+SQLALCHEMY_ECHO = config('SQLALCHEMY_ECHO')
 
 db = SQLAlchemy()
 
@@ -12,9 +16,10 @@ db = SQLAlchemy()
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 """
-def setup_db(app, database_path=database_path):
+def setup_db(app, database_path=DATABASE_PATH):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = SQLALCHEMY_TRACK_MODIFICATIONS
+    app.config["SQLALCHEMY_ECHO"] = SQLALCHEMY_ECHO
     db.app = app
     db.init_app(app)
     db.create_all()
