@@ -10,7 +10,6 @@ from models import setup_db, Question, Category
 TEST_DATABASE_NAME = config('TEST_DATABASE_NAME')
 TEST_DATABASE_URI = config('TEST_DATABASE_URI')
 
-
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
 
