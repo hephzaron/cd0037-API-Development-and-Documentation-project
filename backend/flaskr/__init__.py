@@ -1,15 +1,27 @@
+'''
+This file contains all api endpoints implemented on the TriviaAPI
+
+'''
+import random
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
-import random
 
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
-def paginate_questions(request, selected_questions):
-    page = request.args.get("page", 1, type=int)
+def paginate_questions(request_obj, selected_questions):
+    '''
+    Returns a list questions in chunks of 10 questions per page
+        Parameters:
+            request (flask.Request): A request object
+            selected_questions (Array): An array of questions
+        Returns:
+            current_questions (Array): An array of paginated questions
+    '''
+    page = request_obj.args.get("page", 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
@@ -18,14 +30,21 @@ def paginate_questions(request, selected_questions):
 
     return current_questions
 
-def create_app(test_config=None):
+def create_app():
+    '''
+    Returns an instance of Flask app
+        Parameters:
+            None
+        Returns:
+            app (flask.Flask): In instance of Flask
+    '''
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
 
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    
+
     """
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -34,6 +53,13 @@ def create_app(test_config=None):
     """
     @app.after_request
     def after_request(response):
+        '''
+        Returns a response object
+            Parameters:
+                response (Object): A response object
+            Returns:
+                response (Object): A response object
+        '''
         response.headers.add(
             "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
         )
@@ -49,18 +75,26 @@ def create_app(test_config=None):
     """
     @app.route('/categories')
     def get_categories():
-        
-        # Fetch an array of categories 
+        '''
+        An endpoint that fetches all available question categories
+            Parameters:
+                None
+            Returns:
+                <success> bool: successful transaction
+                <categories> dict: a dictionary of categories with keys:<id> values: <type>
+        '''
+
+        # Fetch an array of categories
         category_arr = [
-            category.format() for category in 
+            category.format() for category in
             Category.query.order_by(Category.type).all()
             ]
-        
+
         # Convert an array of categories to a dictionary object
         category_dict = {}
-        for object in category_arr:
-            category_dict[str(object['id'])] = object['type']
-            
+        for category in category_arr:
+            category_dict[str(category['id'])] = category['type']
+
 
         if len(category_arr) == 0:
             abort(404)
@@ -86,21 +120,31 @@ def create_app(test_config=None):
     """
     @app.route('/questions')
     def get_questions():
-        
-        # Fetch an array of categories        
+        '''
+        An endpoint that fetches all available questions in pages
+            Parameters:
+                None
+            Returns:
+                <success> bool: successful transaction
+                <questions> array: list of all paginated questions
+                <total_questions> int: count of all questions in the database
+                <categories> dict: a dictionary of categories with keys:<id> values: <type>
+                <current_category> str: category of selected question
+        '''
+        # Fetch an array of categories
         category_arr = [
-            category.format() for category in 
+            category.format() for category in
             Category.query.order_by(Category.type).all()
             ]
-        
+
         # Convert an array of categories to a dictionary object
         category_dict = {}
-        for object in category_arr:
-            category_dict[str(object['id'])] = object['type']
-            
+        for category in category_arr:
+            category_dict[str(category['id'])] = category['type']
+
         # Fetch all questions ordered by the category
         questions = Question.query.order_by(Question.category).all()
-        
+
         # Paginate fetched questions in group of 10's
         selected_questions = paginate_questions(request, questions)
 
@@ -115,7 +159,7 @@ def create_app(test_config=None):
                 'categories': category_dict,
                 'current_category': category_dict[str(selected_questions[0]['category'])]
             }
-        )        
+        )
 
     """
     @TODO:
@@ -157,18 +201,20 @@ def create_app(test_config=None):
     """
     @app.route('/categories/<int:category_id>/questions')
     def get_by_category(category_id):
-        
+
         # Get an array of questions by their category from questions table
-        questions = [question.format() for question in 
+        questions = [question.format() for question in
                      Question.query.filter(Question.category==category_id).all()]
-        
+
         # Fetch a category by it's id
         current_category_type = Category.query.filter(Category.id==category_id).one_or_none()
-        category_type = current_category_type.format()['type']
-        
-        if (len(questions)==0 or current_category_type == None):
+
+        if current_category_type is not None:
+            category_type = current_category_type.format()['type']
+
+        if (len(questions)==0 or current_category_type is None):
             abort(404)
-            
+
         return jsonify(
             {
                 'success': True,
@@ -176,7 +222,7 @@ def create_app(test_config=None):
                 'total_questions': len(questions),
                 'current_category': category_type
             }
-        )   
+        )
 
     """
     @TODO:
@@ -210,9 +256,19 @@ def create_app(test_config=None):
         return (
             jsonify({
                 "success": False,
-                "error": 422, 
+                "error": 422,
                 "message": "Unprocessable entity"}),
             422
+        )
+
+    @app.errorhandler(500)
+    def server_error(error):
+        return (
+            jsonify({
+                'success': False,
+                'error': 500,
+                'message': "Server error"}),
+            500
         )
 
     return app
