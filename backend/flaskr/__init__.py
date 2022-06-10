@@ -143,7 +143,7 @@ def create_app():
             category_dict[str(category['id'])] = category['type']
 
         # Fetch all questions ordered by the category
-        questions = Question.query.order_by(Question.category).all()
+        questions = Question.query.order_by(Question.id).all()
 
         # Paginate fetched questions in group of 10's
         selected_questions = paginate_questions(request, questions)
@@ -205,6 +205,24 @@ def create_app():
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/questions', methods=['POST'])
+    def create_question():
+
+        body = request.get_json()
+        if not all(body.values()):
+            abort(400)
+
+        try:
+            question = Question(**body)
+            question.insert()
+
+            return jsonify({
+                'success': True,
+                'message': 'Question was successfully created'
+                })
+
+        except:
+            abort(400)
 
     """
     @TODO:
@@ -267,13 +285,23 @@ def create_app():
     Create error handlers for all expected errors
     including 404 and 422.
     """
+    @app.errorhandler(400)
+    def bad_request(error):
+        return (
+            jsonify({
+                'success': False,
+                'error': 400,
+                'message': 'Bad request'}),
+            400
+        )
+
     @app.errorhandler(404)
     def not_found(error):
         return (
             jsonify({
-                "success": False,
-                "error": 404,
-                "message": "Resource not found"}),
+                'success': False,
+                'error': 404,
+                'message': 'Resource not found'}),
             404
         )
 
@@ -281,9 +309,9 @@ def create_app():
     def unprocessable_entity(error):
         return (
             jsonify({
-                "success": False,
-                "error": 422,
-                "message": "Unprocessable entity"}),
+                'success': False,
+                'error': 422,
+                'message': 'Unprocessable entity'}),
             422
         )
 
