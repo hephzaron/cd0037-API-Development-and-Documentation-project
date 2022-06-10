@@ -82,6 +82,13 @@ class TriviaTestCase(unittest.TestCase):
             'difficulty': 1
             }
 
+        self.errored_question = {
+            'question': 'Who are the sponsors of Udacity Fullstack Web-development programme ?',
+            'answer': 'ALX-T',
+            'category': 'Science',
+            'difficulty': 1
+            }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -218,6 +225,21 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertTrue(data['success'])
         self.assertEqual(data['message'], 'Question was successfully created')
+
+    def test_400_if_question_cannot_be_created(self):
+        '''
+        Tests if question cannot be be created
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().post('/questions', json=self.errored_question)
+        data = response.get_json()
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Bad request')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

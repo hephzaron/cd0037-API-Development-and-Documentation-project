@@ -298,7 +298,7 @@ def create_app():
         return (
             jsonify({
                 'success': False,
-                'error': error,
+                'error': 400,
                 'message': 'Bad request'}),
             400
         )
