@@ -207,6 +207,14 @@ def create_app():
     """
     @app.route('/questions', methods=['POST'])
     def create_question():
+        '''
+        An endpoint that creates a question
+            Parameters:
+                None
+            Returns:
+                <success> bool: successful transaction
+                <message> str: response message on successful delete
+        '''
 
         body = request.get_json()
         if not all(body.values()):
@@ -219,7 +227,7 @@ def create_app():
             return jsonify({
                 'success': True,
                 'message': 'Question was successfully created'
-                })
+                }), 201
 
         except:
             abort(400)
@@ -290,7 +298,7 @@ def create_app():
         return (
             jsonify({
                 'success': False,
-                'error': 400,
+                'error': error,
                 'message': 'Bad request'}),
             400
         )

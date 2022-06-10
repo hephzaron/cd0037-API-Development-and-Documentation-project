@@ -75,6 +75,13 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = TEST_DATABASE_URI
         setup_db(self.app, self.database_path)
 
+        self.new_question = {
+            'question': 'Who are the sponsors of Udacity Fullstack Web-development programme ?',
+            'answer': 'ALX-T',
+            'category': 4,
+            'difficulty': 1
+            }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -196,6 +203,21 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Resource not found')
+
+    def test_create_question(self):
+        '''
+        Tests create a question route
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().post('/questions', json=self.new_question)
+
+        data = response.get_json()
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(data['success'])
+        self.assertEqual(data['message'], 'Question was successfully created')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
