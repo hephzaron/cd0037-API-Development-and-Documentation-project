@@ -164,7 +164,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['total_questions'], 3)
-        self.assertEqual(data['current_category'],'Science')
+        self.assertEqual(data['current_category'], 1)
 
     def test_404_if_category_does_not_exist(self):
         '''
@@ -239,6 +239,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Bad request')
+
+    def test_get_book_search_with_results(self):
+        res = self.client().post("/books", json={"search": "Novel"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["total_books"])
+        self.assertEqual(len(data["books"]), 2)
 
 
 # Make the tests conveniently executable

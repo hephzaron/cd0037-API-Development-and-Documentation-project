@@ -13,6 +13,8 @@ class QuestionView extends Component {
             totalQuestions: 0,
             categories: {},
             currentCategory: null,
+            search: false,
+            searchResults: {}
         };
     }
 
@@ -89,10 +91,12 @@ class QuestionView extends Component {
                 },
                 crossDomain: true,
                 success: (result) => {
+                    let currentCategory = this.state.currentCategory;
                     this.setState({
-                        questions: result.questions,
-                        totalQuestions: result.total_questions,
-                        currentCategory: result.current_category,
+                        search: true,
+                        searchResults: result,
+                        questions: result[`${currentCategory}`].questions,
+                        totalQuestions: result[`${currentCategory}`].total_questions
                     });
                     return;
                 },
@@ -116,7 +120,7 @@ class QuestionView extends Component {
                                 question => question.id !== result.id
                             )
                             this.setState({
-                                questions
+                                questions: questions
                             })
                             return;
 
@@ -148,7 +152,16 @@ class QuestionView extends Component {
                             li key = { id }
                             onClick = {
                                 () => {
-                                    this.getByCategory(id);
+                                    if (this.state.search) {
+                                        let searchResults = this.state.searchResults[id]
+                                        this.setState({
+                                            questions: searchResults['questions'],
+                                            totalQuestions: searchResults['total_questions'],
+                                            currentCategory: searchResults['current_category']
+                                        });
+                                    } else {
+                                        this.getByCategory(id);
+                                    }
                                 }
                             } > { this.state.categories[id] } <
                             img className = 'category'
@@ -160,6 +173,7 @@ class QuestionView extends Component {
                     } <
                     /ul> <
                     Search submitSearch = { this.submitSearch }
+                    getQuestions = { this.getQuestions }
                     /> < /
                     div > <
                     div className = 'questions-list' >

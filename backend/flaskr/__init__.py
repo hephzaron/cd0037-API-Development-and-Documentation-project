@@ -157,7 +157,7 @@ def create_app():
                 'questions': selected_questions,
                 'total_questions': len(questions),
                 'categories': category_dict,
-                'current_category': category_dict[str(selected_questions[0]['category'])]
+                'current_category': 1
             }
         )
 
@@ -217,20 +217,42 @@ def create_app():
         '''
 
         body = request.get_json()
-        if not all(body.values()):
-            abort(400)
+        search_term = body['searchTerm']
 
-        try:
-            question = Question(**body)
-            question.insert()
+        if search_term:
 
-            return jsonify({
-                'success': True,
-                'message': 'Question was successfully created'
-                }), 201
+            matched_questions = Question.query.order_by(Question.id).filter(
+                Question.question.ilike("%{}%".format(search_term)))
 
-        except:
-            abort(400)
+            categories = [category.id for category in Category.query.order_by(Category.id).all()]
+
+            search_result = {}
+            for category_id in categories:
+                questions = [question for question in matched_questions if (question.category==category_id)]
+                current_questions = paginate_questions(request, questions)
+                search_result[str(category_id)] = {
+                    'questions': current_questions,
+                    'total_questions': len(questions),
+                    'current_category': category_id
+                    }
+
+            return search_result
+        else:
+
+            if not all(body.values()):
+                abort(400)
+
+            try:
+                question = Question(**body)
+                question.insert()
+
+                return jsonify({
+                    'success': True,
+                    'message': 'Question was successfully created'
+                    }), 201
+
+            except:
+                abort(400)
 
     """
     @TODO:
@@ -258,13 +280,7 @@ def create_app():
         questions = [question.format() for question in
                      Question.query.filter(Question.category==category_id).all()]
 
-        # Fetch a category by it's id
-        current_category_type = Category.query.filter(Category.id==category_id).one_or_none()
-
-        if current_category_type is not None:
-            category_type = current_category_type.format()['type']
-
-        if (len(questions)==0 or current_category_type is None):
+        if (len(questions)==0):
             abort(404)
 
         return jsonify(
@@ -272,7 +288,7 @@ def create_app():
                 'success': True,
                 'questions': questions,
                 'total_questions': len(questions),
-                'current_category': category_type
+                'current_category': category_id
             }
         )
 

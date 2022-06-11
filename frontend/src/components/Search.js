@@ -1,33 +1,49 @@
 import React, { Component } from 'react';
 
 class Search extends Component {
-  state = {
-    query: '',
-  };
+    state = {
+        query: '',
+    };
 
-  getInfo = (event) => {
-    event.preventDefault();
-    this.props.submitSearch(this.state.query);
-  };
+    /**Add: Get all questions when search field is empty */
+    componentDidUpdate() {
+        if (this.state.query === '') {
+            this.props.getQuestions();
+        }
+    }
 
-  handleInputChange = () => {
-    this.setState({
-      query: this.search.value,
-    });
-  };
+    getInfo = (event) => {
+        event.preventDefault();
+        this.props.submitSearch(this.state.query);
+    };
 
-  render() {
-    return (
-      <form onSubmit={this.getInfo}>
-        <input
-          placeholder='Search questions...'
-          ref={(input) => (this.search = input)}
-          onChange={this.handleInputChange}
-        />
-        <input type='submit' value='Submit' className='button' />
-      </form>
-    );
-  }
+
+    handleInputChange = () => {
+        this.setState({
+            query: this.search.value,
+        });
+        if (this.state.query === '') {
+            console.log('I am here')
+        }
+    };
+
+    render() {
+        return ( <
+            form onSubmit = { this.getInfo } >
+            <
+            input placeholder = 'Search questions...'
+            ref = {
+                (input) => (this.search = input)
+            }
+            onChange = { this.handleInputChange }
+            /> <
+            input type = 'submit'
+            value = 'Submit'
+            className = 'button' / >
+            <
+            /form>
+        );
+    }
 }
 
 export default Search;

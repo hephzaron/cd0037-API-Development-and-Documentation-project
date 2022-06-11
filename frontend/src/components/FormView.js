@@ -31,13 +31,18 @@ class FormView extends Component {
 
     submitQuestion = (event) => {
         event.preventDefault();
+        /**
+         * Format user entry to add a Question mark if ommitted by user
+         */
+        const re = new RegExp('\\?$')
+        let question = re.test(this.state.question) ? this.state.question : this.state.question.concat(' ?')
         $.ajax({
             url: '/questions', //TODO: update request URL
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify({
-                question: this.state.question,
+                question: question,
                 answer: this.state.answer,
                 difficulty: this.state.difficulty,
                 category: this.state.category,
@@ -77,15 +82,15 @@ class FormView extends Component {
             input type = 'text'
             name = 'question'
             onChange = { this.handleChange }
-            />  <
-            /label > <
+            />  < /
+            label > <
             label >
             Answer <
             input type = 'text'
             name = 'answer'
             onChange = { this.handleChange }
-            /> <
-            /label> <
+            /> < /
+            label > <
             label >
             Difficulty <
             select name = 'difficulty'
@@ -95,8 +100,8 @@ class FormView extends Component {
             option value = '2' > 2 < /option> <
             option value = '3' > 3 < /option> <
             option value = '4' > 4 < /option> <
-            option value = '5' > 5 < /option> <
-            /select > <
+            option value = '5' > 5 < /option> < /
+            select > <
             /label> <
             label >
             Category <
@@ -108,14 +113,14 @@ class FormView extends Component {
                     );
                 })
             } <
-            /select> <
-            /label > <
+            /select> < /
+            label > <
             input type = 'submit'
             className = 'button'
             value = 'Submit' / >
             <
-            /form> <
-            /div>
+            /form> < /
+            div >
         );
     }
 }
