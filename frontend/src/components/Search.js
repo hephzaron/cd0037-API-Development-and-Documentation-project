@@ -7,7 +7,7 @@ class Search extends Component {
 
     /**Add: Get all questions when search field is empty */
     componentDidUpdate() {
-        if (this.state.query === '') {
+        if (this.state.query === '' && this.props.search) {
             this.props.getQuestions();
         }
     }
@@ -22,9 +22,6 @@ class Search extends Component {
         this.setState({
             query: this.search.value,
         });
-        if (this.state.query === '') {
-            console.log('I am here')
-        }
     };
 
     render() {

@@ -174,6 +174,7 @@ class QuestionView extends Component {
                     /ul> <
                     Search submitSearch = { this.submitSearch }
                     getQuestions = { this.getQuestions }
+                    search = { this.state.search }
                     /> < /
                     div > <
                     div className = 'questions-list' >
