@@ -226,7 +226,9 @@ def create_app():
                 None
             Returns:
                 <success> bool: successful transaction
-                <message> str: response message on successful delete
+                <message> str: response message on successful creation
+                <search_result> dict: a dictionary of questions that matches the search item
+                    this is returned by category to the user
         '''
 
         body = request.get_json()
@@ -280,6 +282,16 @@ def create_app():
     """
     @app.route('/categories/<int:category_id>/questions')
     def get_by_category(category_id):
+        '''
+        An endpoint that gets questions by category
+            Parameters:
+                category_id (int) : category id of questions to be fetched
+            Returns:
+                <success> bool: successful transaction
+                <questions> array: an array of questions
+                <total_questions> int: total number of returned questions
+                <current_category> int: category id of question object
+        '''
 
         # Get an array of questions by their category from questions table
         questions = [question.format() for question in
@@ -310,7 +322,46 @@ def create_app():
     """
     @app.route('/quizzes', methods=['POST'])
     def get_quizzes():
-        pass
+        '''
+        An endpoint that gets questions by category
+            Parameters:
+                None
+            Returns:
+                <success> bool: successful transaction
+                <question> dict: a question returned at random of selected category
+        '''
+        body = request.get_json()
+        previous_questions = body['previous_questions']
+        quiz_category = body['quiz_category']['id']
+
+        try:
+            questions = Question.query.filter(Question.category==quiz_category)
+
+            # This makes all questions available to a user when All is selected under quiz
+            if(quiz_category==0):
+                questions = Question.query
+
+            # Get questions that has not been sent to client during quiz
+            remaining_questions = list(filter(
+                lambda  question: question.format()['id'] not in previous_questions, questions))
+
+            # Return Questions no longer exist where all questions in the category have been answered
+            if remaining_questions == []:
+                return (
+                    jsonify({
+                        'success': False,
+                        'error': 404,
+                        'message': 'Questions no longer exist in this category'}),
+                    404
+                )
+            choice_question = random.choice(remaining_questions)
+
+            return jsonify({
+                'success': True,
+                'question': choice_question.format()
+            })
+        except:
+            abort(404)
 
     """
     @TODO:
