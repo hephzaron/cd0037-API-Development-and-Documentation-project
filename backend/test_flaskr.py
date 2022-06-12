@@ -268,23 +268,62 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data['message'], 'Resource not found')
 
-    def test_get_quizzes (self):
+    def test_get_quizzes_from_random_questions_first_request(self):
         '''
-        Tests to get quizzes
+        Tests to get quizzes at first requests
             Parameters:
                 self: TriviaTestCase
             Returns:
                 None
         '''
-        previous_questions = [1,3,4,5]
+        # Category id =1 type= science has questions with id=20,21,22
+        previous_questions = [20]
         response = self.client().post('/quizzes', json={
-            'previous_questions': previous_questions, 'quiz_category':'Science'
+            'previous_questions': previous_questions, 'quiz_category':{'id': 1, 'type':'Science'}
             })
         data = response.get_json()
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(data['question'], dict)
         self.assertNotIn(data['question']['id'], previous_questions)
+        self.assertIn(data['question']['id'],[21, 22])
 
+    def test_get_quizzes_from_random_questions_second_request(self):
+        '''
+        Tests to get quizzes at second request
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        # Category id =1 type= science has questions with id=20,21,22
+        previous_questions = [20,21]
+        response = self.client().post('/quizzes', json={
+            'previous_questions': previous_questions, 'quiz_category':{'id': 1, 'type':'Science'}
+            })
+        data = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(data['question'], dict)
+        self.assertNotIn(data['question']['id'], previous_questions)
+        self.assertIn(data['question']['id'],[22])
+
+    def test_404_no_questions_left_for_quiz(self):
+        '''
+        Test if questions no longer exists under category
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        # Category id =1 type= science has questions with id=20,21,22
+        previous_questions = [20,21, 22]
+        response = self.client().post('/quizzes', json={
+            'previous_questions': previous_questions, 'quiz_category':{'id': 1, 'type':'Science'}
+            })
+        data = response.get_json()
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['message'],'Questions no longer exist in this category')
 
 
 # Make the tests conveniently executable
