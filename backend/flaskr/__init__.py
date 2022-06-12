@@ -217,12 +217,12 @@ def create_app():
         '''
 
         body = request.get_json()
-        search_term = body['searchTerm']
 
-        if search_term:
+        if 'searchTerm' in  body.keys():
 
+            search_term = body['searchTerm']
             matched_questions = Question.query.order_by(Question.id).filter(
-                Question.question.ilike("%{}%".format(search_term)))
+                Question.question.ilike('%{}%'.format(search_term)))
 
             categories = [category.id for category in Category.query.order_by(Category.id).all()]
 
