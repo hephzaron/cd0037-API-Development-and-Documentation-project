@@ -241,12 +241,50 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Bad request')
 
     def test_get_questions_search_with_results(self):
+        '''
+        Tests to get question search results
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
         response = self.client().post('/questions', json={'searchTerm': 'Dutch'})
         data = response.get_json()
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(data, dict)
         self.assertEqual(data['2']['total_questions'], 1)
         self.assertEqual(len(data['2']['questions']), 1)
+
+    def test_404_search_term_cannot_be_found(self):
+        '''
+        Test if search term does not exist
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().post('/questions', json={'searchTerm': 19782})
+        data = response.get_json()
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['message'], 'Resource not found')
+
+    def test_get_quizzes (self):
+        '''
+        Tests to get quizzes
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        previous_questions = [1,3,4,5]
+        response = self.client().post('/quizzes', json={
+            'previous_questions': previous_questions, 'quiz_category':'Science'
+            })
+        data = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(data['question'], dict)
+        self.assertNotIn(data['question']['id'], previous_questions)
+
 
 
 # Make the tests conveniently executable

@@ -205,6 +205,19 @@ def create_app():
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+
+
+    """
+    @TODO:
+    Create a POST endpoint to get questions based on a search term.
+    It should return any questions for whom the search term
+    is a substring of the question.
+
+    TEST: Search by any phrase. The questions list will update to include
+    only question that include that string within their question.
+    Try using the word "title" to start.
+    """
+
     @app.route('/questions', methods=['POST'])
     def create_question():
         '''
@@ -223,6 +236,9 @@ def create_app():
             search_term = body['searchTerm']
             matched_questions = Question.query.order_by(Question.id).filter(
                 Question.question.ilike('%{}%'.format(search_term)))
+
+            if len(matched_questions.all()) == 0:
+                abort(404)
 
             categories = [category.id for category in Category.query.order_by(Category.id).all()]
 
@@ -253,17 +269,6 @@ def create_app():
 
             except:
                 abort(400)
-
-    """
-    @TODO:
-    Create a POST endpoint to get questions based on a search term.
-    It should return any questions for whom the search term
-    is a substring of the question.
-
-    TEST: Search by any phrase. The questions list will update to include
-    only question that include that string within their question.
-    Try using the word "title" to start.
-    """
 
     """
     @TODO:
@@ -303,6 +308,9 @@ def create_app():
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+    @app.route('/quizzes', methods=['POST'])
+    def get_quizzes():
+        pass
 
     """
     @TODO:
