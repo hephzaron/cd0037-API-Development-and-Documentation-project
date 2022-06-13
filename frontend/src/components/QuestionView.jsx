@@ -108,7 +108,7 @@ class QuestionView extends Component {
                 return;
             },
             error: (error) => {
-                alert('Unable to load questions. Please try your request again');
+                alert(error.responseJSON['message']);
                 return;
             },
         })
@@ -158,7 +158,10 @@ class QuestionView extends Component {
                                     });
                                 } else {
                                     this.getByCategory(id);
-                                }}}> { this.state.categories[id] }
+                                }}}>
+                                {this.state.search &&
+                                (<span className='numOfSearchItems'>{this.state.searchResults[id]['total_questions']}</span>)}
+                                { this.state.categories[id] }
                                 <img className = 'category'
                                 alt = { `${this.state.categories[id].toLowerCase()}` }
                                 src = { `${this.state.categories[id].toLowerCase()}.svg` }/>

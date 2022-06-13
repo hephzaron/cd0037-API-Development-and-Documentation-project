@@ -266,7 +266,7 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().post('/questions', json={'searchTerm': 19782})
         data = response.get_json()
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(data['message'], 'Resource not found')
+        self.assertEqual(data['message'], 'Question with this term does not exist')
 
     def test_get_quizzes_from_random_questions_first_request(self):
         '''

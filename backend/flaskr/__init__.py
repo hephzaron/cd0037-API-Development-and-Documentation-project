@@ -240,7 +240,13 @@ def create_app():
                 Question.question.ilike('%{}%'.format(search_term)))
 
             if len(matched_questions.all()) == 0:
-                abort(404)
+                return (
+                    jsonify({
+                        'success': False,
+                        'error': 404,
+                        'message': 'Question with this term does not exist'}),
+                    404
+                )
 
             categories = [category.id for category in Category.query.order_by(Category.id).all()]
 
