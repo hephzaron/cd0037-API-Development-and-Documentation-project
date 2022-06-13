@@ -25,20 +25,15 @@ class Search extends Component {
     };
 
     render() {
-        return ( <
-            form onSubmit = { this.getInfo } >
-            <
-            input placeholder = 'Search questions...'
-            ref = {
-                (input) => (this.search = input)
-            }
-            onChange = { this.handleInputChange }
-            /> <
-            input type = 'submit'
-            value = 'Submit'
-            className = 'button' / >
-            <
-            /form>
+        return (
+            <form onSubmit = { this.getInfo } >
+                <input placeholder = 'Search questions...'
+                ref = {(input) => (this.search = input)}
+                onChange = { this.handleInputChange }/>
+                <input type = 'submit'
+                value = 'Submit'
+                className = 'button' />
+            </form>
         );
     }
 }
