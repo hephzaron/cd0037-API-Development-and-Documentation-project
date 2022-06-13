@@ -92,7 +92,15 @@ class QuestionView extends Component {
                 },
                 crossDomain: true,
                 success: (result) => {
-                    let currentCategory = this.state.currentCategory;
+
+                    // Get categories that returns the search item
+                    const categoriesWithSearchItem = Object.keys(result).filter(
+                        key => result[`${key}`]['total_questions'] > 0
+                    )
+
+                    // Enable JSX to render first category with search item
+                    let currentCategory = categoriesWithSearchItem[0]
+
                     this.setState({
                         search: true,
                         searchResults: result,

@@ -404,7 +404,7 @@ def create_app():
             jsonify({
                 'success': False,
                 'error': 500,
-                'message': "Server error"}),
+                'message': 'Server error'}),
             500
         )
 
