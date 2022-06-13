@@ -74,7 +74,10 @@ class QuizView extends Component {
                 return;
             },
             error: (error) => {
-                alert('Unable to load question. Please try your request again');
+                alert(error.responseJSON['message']);
+                if (!error.responseJSON['success']) {
+                    this.setState({ forceEnd: true })
+                }
                 return;
             },
         });
@@ -188,7 +191,8 @@ renderPlay() {
                 (this.state.quizCategory['id'] === 0) &&
                 (this.state.categories[`${this.state.currentQuestion['category']}`])
             } {
-                (this.state.quizCategory['id'] === 0) && ' : ' } { this.state.currentQuestion.question } <
+                (this.state.quizCategory['id'] === 0) && ' : '
+            } { this.state.currentQuestion.question } <
             /div> <
             form onSubmit = { this.submitGuess } >
             <
