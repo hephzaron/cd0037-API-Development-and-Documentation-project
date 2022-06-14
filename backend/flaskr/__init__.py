@@ -1,12 +1,12 @@
 '''
 This file contains all api endpoints implemented on the TriviaAPI
-
 '''
 import random
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
+from sqlalchemy.exc import SQLAlchemyError
 
 from models import setup_db, Question, Category
 
@@ -61,10 +61,10 @@ def create_app():
                 response (Object): A response object
         '''
         response.headers.add(
-            "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+            'Access-Control-Allow-Headers', 'Content-Type,Authorization,true'
         )
         response.headers.add(
-            "Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE"
+            'Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE'
         )
         return response
 
@@ -189,9 +189,9 @@ def create_app():
             return jsonify({
                 'success': True,
                 'id': question_id,
-                'message': 'Question ID: {} deleted successfully'.format(question_id)
+                'message': f'Question ID: {question_id} deleted successfully'
             })
-        except:
+        except SQLAlchemyError :
             abort(500)
 
     """
@@ -236,7 +236,7 @@ def create_app():
 
             search_term = body['searchTerm']
             matched_questions = Question.query.order_by(Question.id).filter(
-                Question.question.ilike('%{}%'.format(search_term)))
+                Question.question.ilike(f'%{search_term}%'))
 
             if len(matched_questions.all()) == 0:
                 return (
@@ -251,7 +251,9 @@ def create_app():
 
             search_result = {}
             for category_id in categories:
-                questions = [question for question in matched_questions if (question.category==category_id)]
+                questions = [
+                    question for question in matched_questions if (question.category==category_id)
+                    ]
                 current_questions = paginate_questions(request, questions)
                 search_result[str(category_id)] = {
                     'questions': current_questions,
@@ -260,22 +262,21 @@ def create_app():
                     }
 
             return search_result
-        else:
 
-            if not all(body.values()):
-                abort(400)
+        if not all(body.values()):
+            abort(400)
 
-            try:
-                question = Question(**body)
-                question.insert()
+        try:
+            question = Question(**body)
+            question.insert()
 
-                return jsonify({
-                    'success': True,
-                    'message': 'Question was successfully created'
-                    }), 201
+            return jsonify({
+                'success': True,
+                'message': 'Question was successfully created'
+                }), 201
 
-            except:
-                abort(400)
+        except SQLAlchemyError:
+            abort(400)
 
     """
     @TODO:
@@ -302,7 +303,7 @@ def create_app():
         questions = [question.format() for question in
                      Question.query.filter(Question.category==category_id).all()]
 
-        if (len(questions)==0):
+        if len(questions)==0:
             abort(404)
 
         return jsonify(
@@ -343,15 +344,15 @@ def create_app():
             questions = Question.query.filter(Question.category==quiz_category)
 
             # This makes all questions available to a user when All is selected under quiz
-            if(quiz_category==0):
+            if quiz_category==0:
                 questions = Question.query
 
             # Get questions that has not been sent to client during quiz
             remaining_questions = list(filter(
                 lambda  question: question.format()['id'] not in previous_questions, questions))
 
-            # Return Questions no longer exist where all questions in the category have been answered
-            if remaining_questions == []:
+            # Return Questions no longer exist if all questions in the category have been answered
+            if not remaining_questions:
                 return (
                     jsonify({
                         'success': False,
@@ -365,7 +366,7 @@ def create_app():
                 'success': True,
                 'question': choice_question.format()
             })
-        except:
+        except SQLAlchemyError:
             abort(404)
 
     """
@@ -414,4 +415,3 @@ def create_app():
         )
 
     return app
-
