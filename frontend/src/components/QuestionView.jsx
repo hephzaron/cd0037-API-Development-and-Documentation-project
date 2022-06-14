@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import '../stylesheets/App.css';
 import Question from './Question';
@@ -32,7 +33,7 @@ class QuestionView extends Component {
                     questions: result.questions,
                     totalQuestions: result.total_questions,
                     categories: result.categories,
-                    currentCategory: result.current_category,
+                    currentCategory: null,
                 });
                 return;
             },
@@ -102,8 +103,9 @@ class QuestionView extends Component {
                 this.setState({
                     search: true,
                     searchResults: result,
-                    questions: result[`${currentCategory}`].questions,
-                    totalQuestions: result[`${currentCategory}`].total_questions
+                    currentCategory: parseInt(currentCategory),
+                    questions: result[currentCategory].questions,
+                    totalQuestions: result[currentCategory].total_questions
                 });
                 return;
             },
@@ -161,7 +163,10 @@ class QuestionView extends Component {
                                 }}}>
                                 {this.state.search &&
                                 (<span className='numOfSearchItems'>{this.state.searchResults[id]['total_questions']}</span>)}
-                                { this.state.categories[id] }
+                                {/*eslint-disable-next-line no-script-url*/}
+                                <a href='javascript:void(0);' className={(this.state.currentCategory===parseInt(id))?'selected':''}>
+                                    { this.state.categories[id] }
+                                </a>
                                 <img className = 'category'
                                 alt = { `${this.state.categories[id].toLowerCase()}` }
                                 src = { `${this.state.categories[id].toLowerCase()}.svg` }/>

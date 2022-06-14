@@ -156,8 +156,7 @@ def create_app():
                 'success': True,
                 'questions': selected_questions,
                 'total_questions': len(questions),
-                'categories': category_dict,
-                'current_category': 1
+                'categories': category_dict
             }
         )
 

@@ -132,7 +132,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['questions']), 10)
-        self.assertTrue(data['current_category'])
         self.assertIsInstance(data['categories'], dict)
 
     def test_get_paginated_questions(self):
@@ -148,10 +147,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['questions']), 9)
-        self.assertTrue(data['current_category'])
         self.assertIsInstance(data['categories'], dict)
 
-    def test_get_by_category(self):
+    def test_get_questions_by_category(self):
         '''
         Tests a returned response object of questions in a particular catgeory
             Parameters:

@@ -72,6 +72,7 @@ img.category {
 
 img.delete {
     width: 20px;
+    cursor: pointer;
 }
 
 
@@ -85,5 +86,18 @@ img.delete {
     margin-right: 10px;
     font-style: italic;
     font-weight: bold;
-    font-size: 12px
+    font-size: 12px;
+}
+
+
+/* Select active li item*/
+
+.selected {
+    color: black;
+    font-weight: bold;
+}
+
+.categories-list a {
+    cursor: pointer;
+    text-decoration: none;
 }
