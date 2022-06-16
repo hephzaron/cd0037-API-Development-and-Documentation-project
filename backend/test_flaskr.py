@@ -1,7 +1,7 @@
-from csv import DictWriter
-import os
+'''
+This file contains the endpoint testing of the Trivia app
+'''
 import unittest
-import json
 from flask_sqlalchemy import SQLAlchemy
 from decouple import config
 
