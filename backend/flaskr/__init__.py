@@ -4,8 +4,7 @@ This file contains all api endpoints implemented on the TriviaAPI
 import random
 import os
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
 
 from models import setup_db, Question, Category
@@ -101,8 +100,8 @@ def create_app():
 
         return jsonify(
             {
-                "success": True,
-                "categories": category_dict
+                'success': True,
+                'categories': category_dict
             }
         )
 
@@ -327,9 +326,9 @@ def create_app():
     and shown whether they were correct or not.
     """
     @app.route('/quizzes', methods=['POST'])
-    def get_quizzes():
+    def play_quizzes():
         '''
-        An endpoint that gets questions by category
+        An endpoint that enables user to answer questions from series of available questions
             Parameters:
                 None
             Returns:
