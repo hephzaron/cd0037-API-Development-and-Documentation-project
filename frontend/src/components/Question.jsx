@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactStars from 'react-rating-stars-component';
 import '../stylesheets/Question.css';
 
 class Question extends Component {
@@ -11,6 +12,9 @@ class Question extends Component {
 
   flipVisibility() {
     this.setState({ visibleAnswer: !this.state.visibleAnswer });
+  }
+  ratingChanged(newRating){
+    console.log(newRating)
   }
 
   render() {
@@ -25,6 +29,15 @@ class Question extends Component {
             src={`${category.toLowerCase()}.svg`}
           />
           <div className='difficulty'>Difficulty: {difficulty}</div>
+          <ReactStars
+            count={5}
+            onChange={this.ratingChanged}
+            size={24}
+            isHalf={true}
+            emptyIcon={<i className="fa fa-star"></i>}
+            halfIcon={<i className="fa fa-star-half-alt"></i>}
+            fullIcon={<i className="fa fa-star"></i>}
+            activeColor="#ffd700"/>
           <img
             src='delete.png'
             alt='delete'
