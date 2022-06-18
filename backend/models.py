@@ -1,7 +1,7 @@
 '''
 This file contains all models of the TriviaAPI database
 '''
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, Float, String, Integer, FLOAT
 from flask_sqlalchemy import SQLAlchemy
 from decouple import config
 
@@ -58,12 +58,14 @@ class Question(db.Model):
     answer = Column(String, nullable=False)
     category = Column(Integer, nullable=False)
     difficulty = Column(Integer, nullable=False)
+    rating = Column(Float)
 
-    def __init__(self, question, answer, category, difficulty):
+    def __init__(self, question, answer, category, difficulty, rating):
         self.question = question
         self.answer = answer
         self.category = category
         self.difficulty = difficulty
+        self.rating = rating
 
     def insert(self):
         '''
@@ -108,13 +110,15 @@ class Question(db.Model):
                 answer <str>: answer to question
                 category <int>: category id question belongs to
                 difficulty <int>: level of question difficulty
+                rating <int>: rating of question
         '''
         return {
             'id': self.id,
             'question': self.question,
             'answer': self.answer,
             'category': self.category,
-            'difficulty': self.difficulty
+            'difficulty': self.difficulty,
+            'rating': self.rating
             }
 
 class Category(db.Model):

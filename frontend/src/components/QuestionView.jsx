@@ -180,10 +180,12 @@ class QuestionView extends Component {
                     <div className = 'questions-list' >
                         <h2> Questions </h2>
                         {this.state.questions.map((q, ind) => ( <Question key = { q.id }
+                        id = {q.id}
                         question = { q.question }
                         answer = { q.answer }
                         category = { this.state.categories[q.category] }
                         difficulty = { q.difficulty }
+                        rating = {q.rating}
                         questionAction = { this.questionAction(q.id) }/>
                         ))}
                         <div className = 'pagination-menu' > { this.createPagination() } </div>

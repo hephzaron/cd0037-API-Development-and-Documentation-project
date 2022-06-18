@@ -368,6 +368,39 @@ def create_app():
         except SQLAlchemyError:
             abort(404)
 
+    '''
+    Add extra: Update question rating
+    '''
+    @app.route('/questions/<int:question_id>', methods=['PATCH'])
+    def update_rating(question_id):
+        '''
+        An endpoint that updates a question rating
+            Parameters:
+                question_id (int): id of question to be deleted
+            Returns:
+                <success> bool: successful transaction
+        '''
+        body = request.get_json()
+
+        try:
+            question = Question.query.filter(Question.id==question_id).one_or_none()
+
+            if question is None:
+                abort(404)
+
+            if 'rating' in body:
+                question.rating = float(body['rating'])
+                question.update()
+
+                result = Question.query.filter(Question.id==question_id).one_or_none()
+                return jsonify({
+                    'message': True,
+                    'question': result.format()
+                    })
+
+        except SQLAlchemyError :
+            abort(500)
+
     """
     @TODO:
     Create error handlers for all expected errors
@@ -389,7 +422,7 @@ def create_app():
             jsonify({
                 'success': False,
                 'error': 404,
-                'message': 'Resource not found'}),
+                'message': error.dumps}),
             404
         )
 
