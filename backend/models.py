@@ -1,7 +1,7 @@
 '''
 This file contains all models of the TriviaAPI database
 '''
-from sqlalchemy import Column, Float, String, Integer, FLOAT
+from sqlalchemy import Column, Float, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 from decouple import config
 
