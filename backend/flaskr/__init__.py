@@ -147,7 +147,7 @@ def create_app():
         # Paginate fetched questions in group of 10's
         selected_questions = paginate_questions(request, questions)
 
-        if len(questions) == 0:
+        if len(questions) == 0 or not selected_questions:
             abort(404)
 
         return jsonify(
@@ -394,12 +394,12 @@ def create_app():
 
                 result = Question.query.filter(Question.id==question_id).one_or_none()
                 return jsonify({
-                    'message': True,
+                    'success': True,
                     'question': result.format()
                     })
 
         except SQLAlchemyError :
-            abort(500)
+            abort(400)
 
     """
     @TODO:

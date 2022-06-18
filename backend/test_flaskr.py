@@ -151,6 +151,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['questions']), 9)
         self.assertIsInstance(data['categories'], dict)
 
+    def test_404_sent_requesting_beyond_valid_page(self):
+        '''
+        Tests a get question requests beyond valid page
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().get('/questions?page=500')
+        data = response.get_json()
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Resource not found')
+
     def test_get_questions_by_category(self):
         '''
         Tests a returned response object of questions in a particular catgeory
@@ -324,6 +338,37 @@ class TriviaTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 404)
         self.assertEqual(data['message'],'Questions no longer exist in this category')
+
+    def test_update_question_rating(self):
+        '''
+        Test to update rating in question
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().patch('/questions/2', json={'rating': 3})
+        data = response.get_json()
+        question = Question.query.filter(Question.id == 2).one_or_none()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(question.format()["rating"], 3)
+
+    def test_400_for_failed_rating_update(self):
+        '''
+        Test for failed update rating in question
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().patch('/questions/2')
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Bad request')
 
 
 # Make the tests conveniently executable
