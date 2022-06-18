@@ -105,14 +105,16 @@ The API will return three error types when requests fail:
             "question": "Nigeria is in which continent ?",
             "answer": "Africa",
             "category": 3,
-            "difficulty": 1
+            "difficulty": 1,
+            "rating": 2
         },
         {
             "id": 2,
             "question": "In what year did Nigeria gain independence ?",
             "answer": 1960,
             "category": 4,
-            "difficulty": 1
+            "difficulty": 1,
+            "rating": 2
         }
         ...
     ],
@@ -168,7 +170,8 @@ The API will return three error types when requests fail:
                 "question": "Nigeria is in which continent ?",
                 "answer": "Africa",
                 "category": 3,
-                "difficulty": 1
+                "difficulty": 1,
+                "rating": 2
             },
             ...
         ],
@@ -182,7 +185,8 @@ The API will return three error types when requests fail:
                 "question": "In what year did Nigeria gain independence ?",
                 "answer": 1960,
                 "category": 4,
-                "difficulty": 1
+                "difficulty": 1,
+                "rating": 2
             },
             ...
         ],
@@ -209,7 +213,8 @@ The API will return three error types when requests fail:
                 "question": "Nigeria is in which continent ?",
                 "answer": "Africa",
                 "category": 3,
-                "difficulty": 1
+                "difficulty": 1,
+                "rating": 2
             },
             ...
         ],
@@ -232,7 +237,27 @@ The API will return three error types when requests fail:
         "question": "Nigeria is in which continent ?",
         "answer": "Africa",
         "category": 3,
-        "difficulty": 1
+        "difficulty": 1,
+        "rating": 2
+    }
+}
+```
+
+### `PATCH /questions/{question_id}`
+- Updates a question's reating.
+- Returns a success value and message as a user feedback.
+- Sample: `curl http://127.0.0.1:5000/questions/1 -X PATCH -H "Content-Type: application/json" -d '{"rating":"2"}'`
+- Response:
+```json
+{
+    "success": True,
+    "question": {
+        "id": 1,
+        "question": "Nigeria is in which continent ?",
+        "answer": "Africa",
+        "category": 3,
+        "difficulty": 1,
+        "rating": 2
     }
 }
 ```
