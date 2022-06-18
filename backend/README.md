@@ -33,13 +33,13 @@ pip install -r requirements.txt
 With Postgres running, create a `trivia` database:
 
 ```bash
-createdb trivia
+createdb -U postgres trivia
 ```
 
 Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
 
 ```bash
-psql trivia < trivia.psql
+psql -U postgres trivia < trivia.psql
 ```
 
 ### Run the Server
@@ -241,9 +241,9 @@ The API will return three error types when requests fail:
 Ensure you are in the `\backend` directory. The test runs in a sequential order and you might have to persist the mock data again as shown below if you intend to run the tests more than once
 run:
 ```bash
-dropdb trivia_test
-createdb trivia_test
-psql trivia_test < trivia.psql
+dropdb -U postgres trivia_test
+createdb -U postgres trivia_test
+psql -U postgres trivia_test < trivia.psql
 python test_flaskr.py
 ```
 ## Author

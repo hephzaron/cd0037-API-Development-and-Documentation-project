@@ -422,7 +422,7 @@ def create_app():
             jsonify({
                 'success': False,
                 'error': 404,
-                'message': error.dumps}),
+                'message': 'Resource not found'}),
             404
         )
 

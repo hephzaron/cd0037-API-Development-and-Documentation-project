@@ -79,14 +79,16 @@ class TriviaTestCase(unittest.TestCase):
             'question': 'Who are the sponsors of Udacity Fullstack Web-development programme ?',
             'answer': 'ALX-T',
             'category': 4,
-            'difficulty': 1
+            'difficulty': 1,
+            'rating': 2.5
             }
 
         self.errored_question = {
             'question': 'Who are the sponsors of Udacity Fullstack Web-development programme ?',
             'answer': 'ALX-T',
             'category': 'Science',
-            'difficulty': 1
+            'difficulty': 1,
+            'rating': 2
             }
 
         # binds the app to the current context
@@ -176,7 +178,7 @@ class TriviaTestCase(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], "Resource not found")
+        self.assertEqual(data['message'], 'Resource not found')
         self.assertEqual(data['error'], 404)
 
     def test_delete_question(self):
