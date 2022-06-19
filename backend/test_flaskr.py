@@ -33,7 +33,6 @@ class SequentialTestLoader(unittest.TestLoader):
 class TriviaTestCase(unittest.TestCase):
     '''
     A class to represent the trivia test case
-
     ...
 
     Attributes
@@ -63,6 +62,28 @@ class TriviaTestCase(unittest.TestCase):
         test the route to delete a question
     test_404_if_question_to_delete_does_not_exist(self):
         test if question to delete does noy exist
+    test_create_question(self)
+        test to create question
+    test_400_if_question_cannot_be_created(self)
+        test if question cannot be created
+    test_get_questions_search_with_results(self)
+        test to get question search results
+    test_404_search_term_cannot_be_found(self)
+        test if search term does not exist
+    test_get_quizzes_from_random_questions_first_request(self)
+        test to get quizzes at first request
+    test_get_quizzes_from_random_questions_second_request(self)
+        test to get quizzes at second request
+    test_404_no_questions_left_for_quiz(self)
+        test if questions no longer exist under category
+    test_update_question_rating(self)
+        test to update rating in question
+    test_400_for_failed_rating_update(self)
+        test for failed update rating in question
+    test_create_category(self)
+        test a create category route
+    test_400_if_category_cannot_be_created(self)
+        test if category cannot be created
     '''
 
     def setUp(self):
@@ -76,7 +97,7 @@ class TriviaTestCase(unittest.TestCase):
         setup_db(self.app, self.database_path)
 
         self.new_question = {
-            'question': 'Who are the sponsors of Udacity Fullstack Web-development programme ?',
+            'question': 'Who are the facilitators of Udacity Fullstack Web-development programme ?',
             'answer': 'ALX-T',
             'category': 4,
             'difficulty': 1,
@@ -91,6 +112,10 @@ class TriviaTestCase(unittest.TestCase):
             'rating': 2
             }
 
+        self.new_category = {
+            'type': 'Astronomy'
+        }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -99,7 +124,7 @@ class TriviaTestCase(unittest.TestCase):
             self.db.create_all()
 
     def tearDown(self):
-        '''Executed after reach test'''
+        '''Executed after each test'''
         pass
 
     """
@@ -366,6 +391,35 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().patch('/questions/2')
         data = response.get_json()
 
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Bad request')
+
+    def test_create_category(self):
+        '''
+        Tests create a category route
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().post('/categories', json=self.new_category)
+
+        data = response.get_json()
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(data['success'])
+        self.assertEqual(data['message'], 'Category was successfully created')
+
+    def test_400_if_category_cannot_be_created(self):
+        '''
+        Tests if category cannot be be created
+            Parameters:
+                self: TriviaTestCase
+            Returns:
+                None
+        '''
+        response = self.client().post('/categories')
+        data = response.get_json()
         self.assertEqual(response.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Bad request')

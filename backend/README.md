@@ -48,6 +48,13 @@ From within the `./backend` within the created virtual environment
 
 To run the server, execute:
 
+Setup flask app and environment
+```bash
+set FLASK_APP=flaskr
+set FLASK_ENV=development
+```
+Run flask app
+
 ```bash
 flask run --reload
 ```
@@ -258,6 +265,26 @@ The API will return three error types when requests fail:
         "category": 3,
         "difficulty": 1,
         "rating": 2
+    }
+}
+```
+### `POST /categories`
+- Creates a new category using `type`.
+- Returns a success value, message and categories as a user feedback.
+- Sample: `curl http://127.0.0.1:5000/categories -X POST -H "Content-Type: application/json" -d '{"type":"Religion"}'`
+- Response:
+```json
+{
+    "success": True,
+    "message": "Category was successfully created",
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+        "7": "Religion"
     }
 }
 ```

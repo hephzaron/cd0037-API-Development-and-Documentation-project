@@ -137,6 +137,17 @@ class Category(db.Model):
     def __init__(self, type):
         self.type = type
 
+    def insert(self):
+        '''
+        Adds a new category to the database
+            Parameters:
+                self
+            Returns:
+                None
+        '''
+        db.session.add(self)
+        db.session.commit()
+
     def format(self):
         '''
         Return Category attributes

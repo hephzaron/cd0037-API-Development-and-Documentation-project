@@ -12,6 +12,7 @@ class FormView extends Component {
             category: 1,
             rating: 1,
             categories: {},
+            categoryType: ''
         };
     }
 
@@ -65,6 +66,34 @@ class FormView extends Component {
         });
     };
 
+    submitCategory = (event) => {
+        event.preventDefault();
+        $.ajax({
+            url: '/categories',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                'type': this.state.categoryType
+            }),
+            xhrFields: {
+                withCredentials: true,
+            },
+            crossDomain: true,
+            success: (result) => {
+                const {message, categories} = result;
+                alert(message);
+                this.setState({ categories});
+                document.getElementById('add-category-form').reset();
+                return;
+            },
+            error: (error) => {
+                alert('Unable to add category. Please try your request again');
+                return;
+            },
+        });
+    };
+
     handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
@@ -73,7 +102,20 @@ class FormView extends Component {
 
     render() {
         return (
-            <div id = 'add-form' >
+            <div id = 'add-form' className='row'>
+                <div id='category-form'>
+                <h2 > Add a New Category </h2>
+                <form className = 'form-view'
+                id = 'add-category-form'
+                onSubmit = { this.submitCategory } >
+                    <label>
+                        Category
+                        <input type = 'text' name = 'categoryType' onChange = { this.handleChange }/>
+                    </label >
+                    <input type = 'submit' className = 'button' value = 'Submit' />
+                </form>
+            </div>
+            <div id='question-form' className='col-sm-6'>
                 <h2 > Add a New Trivia Question </h2>
                 <form className = 'form-view'
                 id = 'add-question-form'
@@ -119,6 +161,7 @@ class FormView extends Component {
                     </label>
                 <input type = 'submit' className = 'button' value = 'Submit' />
             </form>
+            </div>
         </div>
         );
     }

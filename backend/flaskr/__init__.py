@@ -215,7 +215,6 @@ def create_app():
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-
     @app.route('/questions', methods=['POST'])
     def create_question():
         '''
@@ -399,6 +398,47 @@ def create_app():
                     })
 
         except SQLAlchemyError :
+            abort(400)
+
+    @app.route('/categories', methods=['POST'])
+    def create_category():
+        '''
+        An endpoint that creates a category
+            Parameters:
+                None
+            Returns:
+                <success> bool: successful transaction
+                <message> str: response message on successful creation
+                <categories> dict: a dictionary of category types
+        '''
+
+        body = request.get_json()
+
+        if not all(body.values()) or 'type' not in body.keys():
+            abort(400)
+
+        try:
+            category = Category(**body)
+            category.insert()
+
+            # Fetch an array of categories
+            category_arr = [
+                category.format() for category in
+                Category.query.order_by(Category.type).all()
+                ]
+
+            # Convert an array of categories to a dictionary object
+            category_dict = {}
+            for category in category_arr:
+                category_dict[str(category['id'])] = category['type']
+
+            return jsonify({
+                'success': True,
+                'message': 'Category was successfully created',
+                'categories': category_dict
+                }), 201
+
+        except SQLAlchemyError:
             abort(400)
 
     """
