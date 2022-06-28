@@ -18,6 +18,13 @@ Completing this trivia app will give you the ability to structure plan, implemen
 
 [Fork](https://help.github.com/en/articles/fork-a-repo) the project repository and [clone](https://help.github.com/en/articles/cloning-a-repository) your forked repository to your machine. Work on the project locally and make sure to push all your changes to the remote repository before submitting the link to your repository in the Classroom.
 
+## Setup environment variables in .env file in your root directory
+Include:
+```
+DATABASE_URI = "postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@localhost:5432/{DATABASE_NAME}"
+TEST_DATABASE_URI = "postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@localhost:5432/{TEST_DATABASE_NAME}"
+```
+
 ## About the Stack
 
 We started the full stack application for you. It is designed with some key functional areas:

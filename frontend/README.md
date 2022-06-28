@@ -1,4 +1,4 @@
-# Frontend - Trivia API
+ # Frontend - Trivia API
 
 ## Getting Setup
 
